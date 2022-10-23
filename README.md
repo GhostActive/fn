@@ -1,6 +1,6 @@
 # fn
 
-*fn* is a utility script, written in bash, replacing special characters in strings to create proper file- or directory names.
+*fn* (short for *filename*) is a utility script, written in bash, replacing special characters in strings to create proper file- or directory names.
 
 ## Installation and Deinstallation
 
