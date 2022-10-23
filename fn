@@ -1,0 +1,85 @@
+#!/bin/bash
+#
+# fn - converts a list of string arguments to proper file- or directory name
+#
+# Author
+#     GhostActive, https://github.com/ghostactive
+#
+# Copyright (C)
+#     2022 GhostActive
+#
+# License
+#     GNU General Public License v3.0
+#
+# Version
+#     1.0
+#
+
+# Character used for replacing
+REPLACEMENT="-"
+
+# Default date time format for timestamps (-t)
+TIMESTAMP_FORMAT="%F-%H%M%S"
+
+# Complement set of all characters to replace
+PATTERN="[:alnum:]"
+
+# Documentation
+USAGE="fn - converts a list of string arguments to proper file- or directory name
+
+Usage: fn [OPTION]... [STRING]...
+
+All non alphanumeric characters are replaced by '-' (dash). Multiple dashes in
+the filename are reduced to single one, e.g '--' or '---' gets to '-'. Dashes
+at the begin and the end of a name are removed, too.
+
+Options
+    -h, --help
+            Prints this help message.
+
+    -t      Appends current timestamp (format '$TIMESTAMP_FORMAT') to filename
+            as suffix.
+
+    -v      Show version number.
+
+Examples
+    $ fn Hello World
+    Hello-World
+
+    $ fn https://localhost:8443
+    https-localhost-8443
+
+    Writes wget's output to file named like given URL
+    $ wget -O /tmp/\$(fn -t \$URL).html \$URL
+    ..."
+
+while getopts ":-:e:f:cdlhr:stv" option; do
+	case $option in
+		h) echo "$USAGE"; exit 0;;
+		t) TIMESTAMP=$(date +"$TIMESTAMP_FORMAT"); shift 1;;
+		v) 
+		   echo "fn, version 1.0, 2022"
+		   echo "GNU General Public License v3.0"
+		   echo "Copyright (C) 2022 GhostActive, https://github.com/ghostactive"
+		   
+		   exit 0
+		   ;;
+		-) case $OPTARG in
+			help) echo "$USAGE"; exit 0;;
+		   esac
+	esac
+done
+
+CONTENT=( "$@" )
+
+test ! -z "$TIMESTAMP" && CONTENT+=( "$TIMESTAMP" )
+
+# Replace special characters
+RESULT=$(echo "${CONTENT[@]}" | tr -d "\"'" | tr -cs "$PATTERN" "$REPLACEMENT")
+
+# Remove REPLACEMENT (default '-') as prefix or suffix
+RESULT="${RESULT/#$REPLACEMENT}"
+
+echo "${RESULT/%$REPLACEMENT}"
+
+exit 0
