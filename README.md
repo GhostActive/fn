@@ -19,7 +19,7 @@ cd fn && chmod +x fn && sudo cp fn /usr/local/bin/fn
 **Deinstallation**
 
 ```sh
-rm /usr/local/bin/fn
+sudo rm /usr/local/bin/fn
 ```
 
 ## Usage
